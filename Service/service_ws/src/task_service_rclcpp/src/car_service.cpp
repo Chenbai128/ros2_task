@@ -6,13 +6,10 @@
 class CarService : public rclcpp::Node {
 public:
     CarService(std::string name) : Node(name) {
-        // 服务端
         server_ = this->create_service<lr_interfaces::srv::Move>(
             "move_car", 
             std::bind(&CarService::handle_move, this, std::placeholders::_1, std::placeholders::_2));
-        // 发布者
         publisher_ = this->create_publisher<lr_interfaces::msg::CarStatus>("car_status", 10);
-        // 定时器（代替 while 循环）
         timer_ = this->create_wall_timer(
             std::chrono::milliseconds(500), 
             std::bind(&CarService::timer_callback, this));
@@ -28,7 +25,6 @@ private:
     int days = 0;
     bool is_moving = false;
 
-    // 接收请求：瞬间返回
     void handle_move(const std::shared_ptr<lr_interfaces::srv::Move::Request> request,
                      std::shared_ptr<lr_interfaces::srv::Move::Response> response) {
         RCLCPP_INFO(this->get_logger(), "收到目标高度: %d", request->target_height);
@@ -53,7 +49,7 @@ private:
                 msg.days = days;
                 publisher_->publish(msg);
             } else {
-                is_moving = false; /
+                is_moving = false; 
             }
         }
     }

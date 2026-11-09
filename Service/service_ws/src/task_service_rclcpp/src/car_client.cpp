@@ -31,13 +31,12 @@ private:
     int target_height_ = 0; 
     bool is_finished_ = false;
 
-    // 接收 Topic 回调：加 if-else 判断
     void status_callback_(const lr_interfaces::msg::CarStatus::SharedPtr msg) {
-        if (is_finished_) return; // 如果已完成，直接忽略后续消息
+        if (is_finished_) return; 
 
         if (msg->current_height >= target_height_) {
             // 达到了目标高度，输出最终结果
-            RCLCPP_INFO(this->get_logger(), "最终结果：当前高度 %d 米，共用时 %d 天", msg->current_height, msg->days);
+            RCLCPP_INFO(this->get_logger(), "达到目标高度 %d 米，共用时 %d 天", target_height, msg->days);
             is_finished_ = true; 
         } else {
             // 没达到，输出当前位置
